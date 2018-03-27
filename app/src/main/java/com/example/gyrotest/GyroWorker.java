@@ -95,7 +95,7 @@ public class GyroWorker implements SensorEventListener {
 
     }
 
-    public void ResetPos(View view){
+    public void ResetPos(){
         StartIPitch = -LastIPitRead;
         //StartIAzi = -LastIAzi;
         StartIRoll = -LastIRoll+90;

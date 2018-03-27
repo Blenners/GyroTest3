@@ -22,5 +22,11 @@ public class MainActivity extends Activity   {
         worker = new GyroWorker(this);
     }
 
+
+    public void ResetPos()
+    {
+        worker.ResetPos();
+    }
+
 }
 

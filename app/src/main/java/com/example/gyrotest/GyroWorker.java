@@ -17,13 +17,11 @@ public class GyroWorker implements SensorEventListener {
     private SensorManager mSensorManager;
     private Sensor mRotationSensor;
 
-    private int LastIPitRead = 0;
-    private int LastIAzi = 0;
-    private int LastIRoll = 0;
+    private int[] LastReadPRA = new int[3];
 
-    public int StartIPitch = 0;
-    public int StartIAzi = 0;
-    public int StartIRoll = 0;
+    private int[] StartValsPRA = new int[3];
+
+    private int[] AdjustedValsPRA = new int[3];
 
     private static final int SENSOR_DELAY = 500 * 1000; // 500ms
     private static final int FROM_RADS_TO_DEGS = -57;
@@ -74,30 +72,38 @@ public class GyroWorker implements SensorEventListener {
         float azimuth = orientation[0] * FROM_RADS_TO_DEGS;
         float pitch = orientation[1] * FROM_RADS_TO_DEGS;
         float roll = orientation[2] * FROM_RADS_TO_DEGS;
-        int IAzi = (int) azimuth;
-        int IPitch = (int) pitch;
-        int IRoll = (int) roll;
-        ((TextView)mParent.findViewById(R.id.XDisplay)).setText("Pitch: "+IPitch);
-        ((TextView)mParent.findViewById(R.id.YDisplay)).setText("Roll: "+IRoll);
-        ((TextView)mParent.findViewById(R.id.ZDisplay)).setText("Azimuth: "+IAzi);
-        ((TextView)mParent.findViewById(R.id.XAdjusted)).setText("Ad Pitch: "+(IPitch+StartIPitch));
-        ((TextView)mParent.findViewById(R.id.YAdjusted)).setText("Ad Roll: "+(IRoll+StartIRoll));
-        ((TextView)mParent.findViewById(R.id.ZAdjusted)).setText("Ad Azimuth: "+(IAzi+StartIAzi));
+
+        // Add 180 deg to numbers to make them between 0-360 for motor
+
+        LastReadPRA[0] = (int) pitch + 180;
+        LastReadPRA[1] = (int) roll + 180;
+        LastReadPRA[2] = (int) azimuth + 180;
+
+
+        for (int i = 0; i <=2; i++){
+            if (LastReadPRA[i] < StartValsPRA[i]) {
+                AdjustedValsPRA[i] = LastReadPRA[i] - StartValsPRA[i];
+            }
+            else if (LastReadPRA[i] > StartValsPRA[i]){
+                AdjustedValsPRA[i] = 360 - (StartValsPRA[i] - LastReadPRA[i]);
+            }
+        }
+
+        ((TextView)mParent.findViewById(R.id.XDisplay)).setText("Pitch: "+LastReadPRA[0]);
+        ((TextView)mParent.findViewById(R.id.YDisplay)).setText("Roll: "+LastReadPRA[1]);
+        ((TextView)mParent.findViewById(R.id.ZDisplay)).setText("Azimuth: "+LastReadPRA[2]);
+        ((TextView)mParent.findViewById(R.id.XAdjusted)).setText("Ad Pitch: "+(AdjustedValsPRA[0]));
+        ((TextView)mParent.findViewById(R.id.YAdjusted)).setText("Ad Roll: "+(AdjustedValsPRA[1]));
+        ((TextView)mParent.findViewById(R.id.ZAdjusted)).setText("Ad Azimuth: "+(AdjustedValsPRA[2]));
         //if (((IPitch+StartIPitch) > 0) && (LastIPitRead <= 0)){
         //   Toast.makeText( this, "Please look down, max pitch reached", Toast.LENGTH_SHORT).show();
         //}
-        LastIPitRead = IPitch;
-        LastIAzi = IAzi;
-        LastIRoll = IRoll;
-        if (firstRun == 1){
-            StartIAzi = IAzi;
-        }
 
     }
 
     public void ResetPos(){
-        StartIPitch = -LastIPitRead;
-        //StartIAzi = -LastIAzi;
-        StartIRoll = -LastIRoll+90;
+        StartValsPRA[0] = LastReadPRA[0];
+        StartValsPRA[1] = LastReadPRA[1];
+        StartValsPRA[2] = LastReadPRA[2];
     }
 }

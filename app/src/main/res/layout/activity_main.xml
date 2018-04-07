@@ -114,7 +114,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="COnnect to Drone"
+        android:onClick="Connect"
+        android:text="Connect to Drone"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="70dp" />
 
@@ -126,6 +127,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:onClick="startDroneFeed"
         android:text="Control"
         app:layout_constraintBottom_toTopOf="@+id/tableLayout"
         app:layout_constraintEnd_toEndOf="@+id/ConnectButton"
@@ -176,5 +178,16 @@
         </TableRow>
 
     </TableLayout>
+
+    <EditText
+        android:id="@+id/countBox"
+        android:layout_width="62dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:inputType="number"
+        android:text="Count"
+        app:layout_constraintBaseline_toBaselineOf="@+id/StartControl"
+        app:layout_constraintStart_toEndOf="@+id/StartControl" />
 
 </android.support.constraint.ConstraintLayout>

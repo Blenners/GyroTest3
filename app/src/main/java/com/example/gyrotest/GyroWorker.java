@@ -9,19 +9,21 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class GyroWorker implements SensorEventListener {
     private Activity mParent;
     private SensorManager mSensorManager;
     private Sensor mRotationSensor;
 
-    private int[] LastReadPRA = new int[3];
+    private static int[] LastReadPRA = new int[3];
 
-    private int[] StartValsPRA = new int[3];
+    private static int[] StartValsPRA = new int[3];
 
-    private int[] AdjustedValsPRA = new int[3];
+    private static int[] AdjustedValsPRA = new int[3];
 
     private static final int SENSOR_DELAY = 500 * 1000; // 500ms
     private static final int FROM_RADS_TO_DEGS = -57;
@@ -52,14 +54,14 @@ public class GyroWorker implements SensorEventListener {
             if (event.values.length > 4) {
                 float[] truncatedRotationVector = new float[4];
                 System.arraycopy(event.values, 0, truncatedRotationVector, 0, 4);
-                update(truncatedRotationVector, 0);
+                update(truncatedRotationVector);
             } else {
-                update(event.values, 0);
+                update(event.values);
             }
         }
     }
 
-    private void update(float[] vectors, int firstRun) {
+    private void update(float[] vectors) {
 
         float[] rotationMatrix = new float[9];
         SensorManager.getRotationMatrixFromVector(rotationMatrix, vectors);
@@ -105,5 +107,8 @@ public class GyroWorker implements SensorEventListener {
         StartValsPRA[0] = LastReadPRA[0];
         StartValsPRA[1] = LastReadPRA[1];
         StartValsPRA[2] = LastReadPRA[2];
+    }
+    public int[] getCurrentVals(){
+        return AdjustedValsPRA;
     }
 }

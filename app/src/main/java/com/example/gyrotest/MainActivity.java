@@ -1,40 +1,38 @@
 package com.example.gyrotest;
 
-import android.content.pm.ActivityInfo;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
+
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.CompoundButton;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.app.Activity;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
 
-public class MainActivity extends Activity   {
+public class MainActivity extends Activity {
 
-    long sendTime = 0;
+
     GyroWorker worker;
-    ToggleButton t;
     SocketHandler SH;
     boolean buttonState;
+    private Handler mHandler;
 
 
-    //TODO best bway to delay
+    //TODO best way to delay
     Runnable r = new Runnable() {
         @Override
         public void run() {
-
-            SH.sendData(worker.getCurrentVals(buttonState));
             try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
+                SH.sendData(worker.getCurrentVals(buttonState), SH.printWriter);
+                System.out.print(worker.getCurrentVals(buttonState).toString());
+                //Thread.sleep(500);
+            } /*catch (InterruptedException e) {
                 e.printStackTrace();
+            }*/ finally {
+                mHandler.postDelayed(r, 500);
+                //long l = 1000;
+                //  r.wait(l);
             }
         }
     };
@@ -47,16 +45,18 @@ public class MainActivity extends Activity   {
         SH = new SocketHandler();
         final Thread sendThread = new Thread(r);
 
-        // Fix or fre mode button
+        mHandler = new Handler();
+
+
+        // Fix or free mode button
         final ToggleButton t = findViewById(R.id.Lidar);
-        t.setOnClickListener(new View.OnClickListener(){
+        t.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
 
                 if (t.isChecked()) {
                     buttonState = true;
-                }
-                else{
+                } else {
                     buttonState = false;
                 }
             }
@@ -64,16 +64,17 @@ public class MainActivity extends Activity   {
 
         // Data send button
         final ToggleButton s = findViewById(R.id.sendData);
-        s.setOnClickListener(new View.OnClickListener(){
+        s.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
 
                 if (s.isChecked()) {
-                    //TODO wait 10 secs sothe user can load up the other app
+                    s.setBackgroundColor(Color.GREEN);
+                    //TODO wait 10 secs so the user can load up the other app
                     worker.ResetPos();
                     sendThread.start();
-                }
-                else{
+                } else {
+                    s.setBackgroundColor(Color.GRAY);
                     sendThread.interrupt();
                 }
             }
@@ -82,18 +83,16 @@ public class MainActivity extends Activity   {
     }
 
 
-    public void Connect(){
+    public void Connect(View v) {
         try {
             SH.connect();
         } catch (IOException e) {
             e.printStackTrace();
+
         }
     }
+}
 
-    public void startDroneFeed(){
-
-
-    }
 
 
 

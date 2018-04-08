@@ -6,7 +6,7 @@ import java.net.*;
 public class SocketHandler {
     public static void connect() throws IOException {
 
-
+        //TODO read in inputs from text box but keep as default
         String hostName = "192.168.0.60"; //args[0];
         int portNumber = 8888;//Integer.parseInt(args[1]);
 
@@ -23,6 +23,7 @@ public class SocketHandler {
                                 new InputStreamReader(System.in))
         )
         {
+            //TODO sort separate sending code
             /*String userInput;
             while ((userInput = stdIn.readLine()) != null) {
                 out.println(userInput);

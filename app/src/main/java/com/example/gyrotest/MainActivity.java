@@ -18,16 +18,67 @@ import java.io.IOException;
 
 public class MainActivity extends Activity   {
 
+    long sendTime = 0;
     GyroWorker worker;
     ToggleButton t;
     SocketHandler SH;
-    int buttonState = 0;
+    boolean buttonState;
+
+
+    //TODO best bway to delay
+    Runnable r = new Runnable() {
+        @Override
+        public void run() {
+
+            SH.sendData(worker.getCurrentVals(buttonState));
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         worker = new GyroWorker(this);
-        t = findViewById(R.id.Lidar);
+        SH = new SocketHandler();
+        final Thread sendThread = new Thread(r);
+
+        // Fix or fre mode button
+        final ToggleButton t = findViewById(R.id.Lidar);
+        t.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View v) {
+
+                if (t.isChecked()) {
+                    buttonState = true;
+                }
+                else{
+                    buttonState = false;
+                }
+            }
+        });
+
+        // Data send button
+        final ToggleButton s = findViewById(R.id.sendData);
+        s.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View v) {
+
+                if (s.isChecked()) {
+                    //TODO wait 10 secs sothe user can load up the other app
+                    worker.ResetPos();
+                    sendThread.start();
+                }
+                else{
+                    sendThread.interrupt();
+                }
+            }
+        });
+
     }
 
 
@@ -41,23 +92,10 @@ public class MainActivity extends Activity   {
 
     public void startDroneFeed(){
 
-        worker.ResetPos();
-        sendThread s = new sendThread();
-        s.start();
 
     }
-    /*
-    toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b){
 
-        if(b){
-            buttonState = 0;
-        }
-        else{
-            buttonState = 1;
-        }
-    }*/
 
-}
+
 
 

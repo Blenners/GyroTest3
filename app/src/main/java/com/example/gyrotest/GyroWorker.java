@@ -23,7 +23,7 @@ public class GyroWorker implements SensorEventListener {
 
     private static int[] StartValsPRA = new int[3];
 
-    private static int[] AdjustedValsPRA = new int[3];
+    public static int[] AdjustedValsPRA = new int[3];
 
     private static final int SENSOR_DELAY = 500 * 1000; // 500ms
     private static final int FROM_RADS_TO_DEGS = -57;
@@ -108,7 +108,16 @@ public class GyroWorker implements SensorEventListener {
         StartValsPRA[1] = LastReadPRA[1];
         StartValsPRA[2] = LastReadPRA[2];
     }
-    public int[] getCurrentVals(){
-        return AdjustedValsPRA;
+
+
+    public int[] getCurrentVals(boolean buttonState){
+
+        if (buttonState){
+            return new int[3]; //TODO check this is all 0
+        }
+        else{
+            return AdjustedValsPRA;
+        }
+
     }
 }

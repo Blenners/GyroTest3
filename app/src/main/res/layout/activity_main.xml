@@ -82,7 +82,7 @@
                 android:id="@+id/ZAdjusted"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ZA" />
+                android:text="AZ" />
         </TableRow>
     </TableLayout>
 
@@ -119,27 +119,13 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="70dp" />
 
-    <Button
-        android:id="@+id/StartControl"
-        android:layout_width="88dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:onClick="startDroneFeed"
-        android:text="Control"
-        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
-        app:layout_constraintEnd_toEndOf="@+id/ConnectButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ConnectButton"
-        app:layout_constraintVertical_bias="0.538" />
-
     <TableLayout
         android:layout_width="171dp"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="211dp"
-        tools:layout_editor_absoluteY="204dp">
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TableRow
             android:layout_width="match_parent"
@@ -183,11 +169,25 @@
         android:id="@+id/countBox"
         android:layout_width="62dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:ems="10"
         android:inputType="number"
         android:text="Count"
-        app:layout_constraintBaseline_toBaselineOf="@+id/StartControl"
-        app:layout_constraintStart_toEndOf="@+id/StartControl" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/sendData"
+        app:layout_constraintStart_toEndOf="@+id/ConnectButton" />
+
+    <ToggleButton
+        android:id="@+id/sendData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Send Data"
+        android:textOff="Control "
+        android:textOn="Stop sending"
+        app:layout_constraintEnd_toEndOf="@+id/ConnectButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ConnectButton" />
 
 </android.support.constraint.ConstraintLayout>

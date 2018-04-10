@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
             } /*catch (InterruptedException e) {
                 e.printStackTrace();
             }*/ finally {
-                mHandler.postDelayed(r, 500);
+                mHandler.postDelayed(r, 2000);
                 //long l = 1000;
                 //  r.wait(l);
             }
@@ -90,8 +90,15 @@ public class MainActivity extends Activity {
             e.printStackTrace();
 
         }
+
     }
+
+    public void resetButton(View view){
+        worker.ResetPos();
+    }
+
 }
+
 
 
 

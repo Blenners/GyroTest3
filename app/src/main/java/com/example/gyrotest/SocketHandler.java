@@ -6,7 +6,7 @@ import java.net.*;
 public class SocketHandler {
 
     public static PrintWriter printWriter;
-    public static  BufferedReader bufferedReaderIn;
+    public static BufferedReader bufferedReaderIn;
     public static BufferedReader bufferedReaderStdIn;
     public static Thread thread = new Thread(new Runnable() {
 
@@ -18,13 +18,13 @@ public class SocketHandler {
                     int portNumber = 8888;//Integer.parseInt(args[1]);
 
                     try (
-                            Socket echoSocket = new Socket(hostName, portNumber);
+                            Socket droneSocket = new Socket(hostName, portNumber);
                             PrintWriter out =
-                                    new PrintWriter(echoSocket.getOutputStream(), true);
+                                    new PrintWriter(droneSocket.getOutputStream(), true);
 
                             BufferedReader in =
                                     new BufferedReader(
-                                            new InputStreamReader(echoSocket.getInputStream()));
+                                            new InputStreamReader(droneSocket.getInputStream()));
                             BufferedReader stdIn =
                                     new BufferedReader(
                                             new InputStreamReader(System.in))
@@ -55,6 +55,18 @@ public class SocketHandler {
 
     });
 
+    /*public boolean isConnected() {
+        if (droneSocket == null){
+            return false;
+        }
+        else if (socket.isConnected()){
+            return true;
+        }
+        else {
+            socket = null;
+            return false;
+        }
+    }*/
 
     public static void connect() throws IOException {
 
@@ -68,7 +80,8 @@ public class SocketHandler {
     public static void sendData(int[] vals, PrintWriter pw){
 
         pw.println(vals);
-
+        //pw.println("Tree");
+        System.out.println(vals);
 
     }
 }

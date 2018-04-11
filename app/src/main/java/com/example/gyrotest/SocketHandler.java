@@ -34,6 +34,8 @@ public class SocketHandler {
                         bufferedReaderStdIn = stdIn;
 
                         //TODO sort separate sending code
+
+                        printWriter.println("Test Message");
             /*String userInput;
             while ((userInput = stdIn.readLine()) != null) {
                 out.println(userInput);
@@ -51,6 +53,7 @@ public class SocketHandler {
                 } catch(Exception e){
                     e.printStackTrace();
                 }
+
             }
 
     });

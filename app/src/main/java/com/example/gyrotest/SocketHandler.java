@@ -3,8 +3,11 @@ package com.example.gyrotest;
 import java.io.*;
 import java.net.*;
 
+import static java.lang.Thread.sleep;
+
 public class SocketHandler {
 
+    private static int[] orientationVals = new int[3];
     public static PrintWriter printWriter;
     public static BufferedReader bufferedReaderIn;
     public static BufferedReader bufferedReaderStdIn;
@@ -36,11 +39,14 @@ public class SocketHandler {
                         //TODO sort separate sending code
 
                         printWriter.println("Test Message");
-            /*String userInput;
-            while ((userInput = stdIn.readLine()) != null) {
-                out.println(userInput);
-                System.out.println("echo: " + in.readLine());
-            }*/
+            while ((orientationVals = GyroWorker.AdjustedValsPRA) != null) {
+
+                out.println(orientationVals[0] + "," + orientationVals[1] + "," + orientationVals[2]);
+                //out.println(orientationVals);
+                //System.out.println("--------------");
+                //System.out.println(orientationVals);
+                sleep(2000);
+            }
                     } catch (UnknownHostException e) {
                         System.err.println("Don't know about host " + hostName);
                         System.exit(1);
@@ -74,7 +80,6 @@ public class SocketHandler {
     public static void connect() throws IOException {
 
             thread.start();
-
 
         //TODO read in inputs from text box but keep as default
 

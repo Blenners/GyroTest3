@@ -110,6 +110,8 @@ public class GyroWorker implements SensorEventListener {
         LastRunValsPRA[0] = CurrentValsRPA[0]; //P between -90 and 90
         LastRunValsPRA[1] = CurrentValsRPA[1];
         LastRunValsPRA[2] = CurrentValsRPA[2];
+        //System.out.println("--------------");
+        //System.out.println(AdjustedValsPRA[0]);
     }
 
     public void ResetPos(){

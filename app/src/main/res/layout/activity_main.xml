@@ -170,39 +170,15 @@
 
     </TableLayout>
 
-    <EditText
-        android:id="@+id/countBox"
-        android:layout_width="62dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:ems="10"
-        android:inputType="number"
-        android:text="Count"
-        app:layout_constraintBaseline_toBaselineOf="@+id/sendData"
-        app:layout_constraintStart_toEndOf="@+id/ConnectButton" />
-
-    <ToggleButton
-        android:id="@+id/sendData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:text="Send Data"
-        android:textOff="Control "
-        android:textOn="Stop sending"
-        app:layout_constraintEnd_toEndOf="@+id/ConnectButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ConnectButton" />
-
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="76dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="32dp"
         android:onClick="resetButton"
         android:text="Reset pos"
-        app:layout_constraintBaseline_toBaselineOf="@+id/countBox"
+        app:layout_constraintBottom_toTopOf="@+id/tableLayout2"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

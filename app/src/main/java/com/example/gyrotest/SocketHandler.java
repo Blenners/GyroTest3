@@ -7,25 +7,26 @@ import static java.lang.Thread.sleep;
 
 public class SocketHandler {
 
-    private static int[] orientationVals = new int[3];
-    public static PrintWriter printWriter;
+    private static int[] orientationVals = new int[3]; // Initialise variables to be sent to drone
+    public static PrintWriter printWriter; // TODO CHECK - MIGHT BE ABLE TO REMOVE
     public static BufferedReader bufferedReaderIn;
     public static BufferedReader bufferedReaderStdIn;
-    public static Thread thread = new Thread(new Runnable() {
+    public static Thread thread = new Thread(new Runnable() { // Creates this as a thread
 
         @Override
         public void run() {
             try {
 
-                    String hostName = "192.168.0.60"; //args[0];
-                    int portNumber = 8888;//Integer.parseInt(args[1]);
+                    //TODO read in inputs from text box but keep as default
+                    String hostName = "192.168.0.58"; // IP address of the Raspberry Pi
+                    int portNumber = 8888; // Port that the server is hosting
 
                     try (
-                            Socket droneSocket = new Socket(hostName, portNumber);
-                            PrintWriter out =
+                            Socket droneSocket = new Socket(hostName, portNumber); // Creates the socket
+                            PrintWriter out = // Creates channel to write data to the server
                                     new PrintWriter(droneSocket.getOutputStream(), true);
 
-                            BufferedReader in =
+                            BufferedReader in = // Creates channel to read data from server (not used)
                                     new BufferedReader(
                                             new InputStreamReader(droneSocket.getInputStream()));
                             BufferedReader stdIn =
@@ -36,18 +37,11 @@ public class SocketHandler {
                         bufferedReaderIn = in;
                         bufferedReaderStdIn = stdIn;
 
-                        //TODO sort separate sending code
-
-                        printWriter.println("Test Message");
-            while ((orientationVals = GyroWorker.AdjustedValsPRA) != null) {
-
-                out.println(orientationVals[0] + "," + orientationVals[1] + "," + orientationVals[2]);
-                //out.println(orientationVals);
-                //System.out.println("--------------");
-                //System.out.println(orientationVals);
-                sleep(2000);
+            while ((orientationVals = GyroWorker.AdjustedValsPRA) != null) { // When there are values available
+                out.println(orientationVals[0] + "," + orientationVals[1] + "," + orientationVals[2]); // Send them to the server
+                sleep(2000); // Do this every xxx milliseconds
             }
-                    } catch (UnknownHostException e) {
+                    } catch (UnknownHostException e) { // Error handling
                         System.err.println("Don't know about host " + hostName);
                         System.exit(1);
                     } catch (IOException e) {
@@ -77,19 +71,17 @@ public class SocketHandler {
         }
     }*/
 
-    public static void connect() throws IOException {
+    public static void connect() throws IOException { // Called from main when button pressed
 
-            thread.start();
-
-        //TODO read in inputs from text box but keep as default
+        thread.start(); // Starts thread
 
     }
 
-    public static void sendData(int[] vals, PrintWriter pw){
+    /*public static void sendData(int[] vals, PrintWriter pw){
 
         pw.println(vals);
         //pw.println("Tree");
         System.out.println(vals);
 
-    }
+    }*/
 }

@@ -10,7 +10,7 @@ import java.io.IOException;
 public class MainActivity extends Activity {
 
 
-    GyroWorker worker; // Creates instances of each class
+    GyroWorker worker; // Listing out attributes
     SocketHandler SH;
     public static boolean buttonState; // Public variable for use in GyroWorker
 
@@ -18,15 +18,15 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) { // Called when the app is loaded up
         super.onCreate(savedInstanceState);
-        worker = new GyroWorker(this); // Links them to the class
+        worker = new GyroWorker(this); // Creates instances of each class
         SH = new SocketHandler();
 
 
         // Fix or free mode button
         final ToggleButton t = findViewById(R.id.Lidar); // Sets up a listener that is called
-        t.setOnClickListener(new View.OnClickListener() {
+        t.setOnClickListener(new View.OnClickListener() {//  every time the button is pressed
 
-            public void onClick(View v) {                    //  every time the button is pressed
+            public void onClick(View v) {
 
                 if (t.isChecked()) { // Sets the public variable state depending on the state
                     buttonState = true; // of the button

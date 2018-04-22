@@ -8,9 +8,6 @@ import static java.lang.Thread.sleep;
 public class SocketHandler {
 
     private static int[] orientationVals = new int[3]; // Initialise variables to be sent to drone
-    public static PrintWriter printWriter; // TODO CHECK - MIGHT BE ABLE TO REMOVE
-    public static BufferedReader bufferedReaderIn;
-    public static BufferedReader bufferedReaderStdIn;
     public static Thread thread = new Thread(new Runnable() { // Creates this as a thread
 
         @Override
@@ -18,7 +15,7 @@ public class SocketHandler {
             try {
 
                     //TODO read in inputs from text box but keep as default
-                    String hostName = "192.168.0.58"; // IP address of the Raspberry Pi
+                    String hostName = "192.168.0.58"; // IP address of the Raspberry Pi 58 20 for laptop
                     int portNumber = 8888; // Port that the server is hosting
 
                     try (
@@ -26,16 +23,14 @@ public class SocketHandler {
                             PrintWriter out = // Creates channel to write data to the server
                                     new PrintWriter(droneSocket.getOutputStream(), true);
 
-                            BufferedReader in = // Creates channel to read data from server (not used)
-                                    new BufferedReader(
+                            /*BufferedReader in = // Creates channel to read data from server (not used)
+                                    new BufferedReader( // Kept for potential future development
                                             new InputStreamReader(droneSocket.getInputStream()));
                             BufferedReader stdIn =
                                     new BufferedReader(
-                                            new InputStreamReader(System.in))
+                                            new InputStreamReader(System.in))*/
                     ) {
-                        printWriter = out;
-                        bufferedReaderIn = in;
-                        bufferedReaderStdIn = stdIn;
+
 
             while ((orientationVals = GyroWorker.AdjustedValsPRA) != null) { // When there are values available
                 out.println(orientationVals[0] + "," + orientationVals[1] + "," + orientationVals[2]); // Send them to the server

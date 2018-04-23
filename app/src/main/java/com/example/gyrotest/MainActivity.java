@@ -13,6 +13,7 @@ public class MainActivity extends Activity {
     GyroWorker worker; // Listing out attributes
     SocketHandler SH;
     public static boolean buttonState; // Public variable for use in GyroWorker
+    public static boolean modeState; // Public variable for use in GyroWorker
 
 
     @Override
@@ -36,11 +37,26 @@ public class MainActivity extends Activity {
             }
         });
 
+        final ToggleButton t2 = findViewById(R.id.ModeBut); // Sets up a listener that is called
+        t2.setOnClickListener(new View.OnClickListener() {//  every time the button is pressed
+
+            public void onClick(View v) {
+
+                if (t2.isChecked()) {
+                    worker.ResetPos();
+                    modeState = true;
+                } else {
+                    modeState = false;
+                }
+            }
+        });
+
     }
 
 
     public void Connect(View v) { // Called when the connect button is called
         try {                     // (Option in button setting)
+            worker.ResetPos();
             SH.connect();         // Calls connect function in SH (SocketHandler) class
         } catch (IOException e) {
             e.printStackTrace();  // Error handling

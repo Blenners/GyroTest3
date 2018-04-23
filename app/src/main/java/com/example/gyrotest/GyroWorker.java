@@ -10,6 +10,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static java.lang.Math.abs;
+
 public class GyroWorker implements SensorEventListener {
     private Activity mParent;               // Main function, calls this class
     private SensorManager mSensorManager;   // Creates instance of SensorManager
@@ -24,8 +26,12 @@ public class GyroWorker implements SensorEventListener {
 
     public static int[] LastRunValsPRA = new int[3];
 
+    public static int[] LimitedValsPRA = new int[3];
+
     private static final int SENSOR_DELAY = 500 * 1000; // 500ms - sampling rate or sensors
     private static final int FROM_RADS_TO_DEGS = -57;   // Constant to convert Radians to degrees
+
+    private static long lastUpdate = 0;
 
     public GyroWorker(Activity mParent)
     {
@@ -84,19 +90,38 @@ public class GyroWorker implements SensorEventListener {
         CurrentValsRPA[1] = (int) roll + 180;
         CurrentValsRPA[2] = (int) azimuth + 180;
 
+        // 30* upwards,90* downwards tilt. ±45*roll. ±90* yaw - gimbal restrictions
 
         // Checks to see if the camera is in fixed mode for the lidar
         if (MainActivity.buttonState == false){
-            for (int i = 0; i <=2; i++) { // Adjusts the values to be centered around the start point
-                AdjustedValsPRA[i] = CurrentValsRPA[i] - OffsetValsRPA[i];
-                if (i != 0){
-                    if (AdjustedValsPRA[i] > 360) {
-                        AdjustedValsPRA[i] = AdjustedValsPRA[i] - 360;
-                    }
-                    if (AdjustedValsPRA[i] < 0) {
-                        AdjustedValsPRA[i] = AdjustedValsPRA[i] + 360;
+            if(MainActivity.modeState == false){
+                for (int i = 0; i <=2; i++) { // Adjusts the values to be centered around the start point
+                    AdjustedValsPRA[i] = CurrentValsRPA[i] - OffsetValsRPA[i];
+                    if (i != 0) {
+                        if (AdjustedValsPRA[i] > 360) {
+                            AdjustedValsPRA[i] = AdjustedValsPRA[i] - 360;
+                        }
+                        if (AdjustedValsPRA[i] < 0) {
+                            AdjustedValsPRA[i] = AdjustedValsPRA[i] + 360;
+                        }
                     }
                 }
+            }
+            else if ((lastUpdate - System.currentTimeMillis()) >= 500) {
+                    AdjustedValsPRA[0] = CurrentValsRPA[0] - OffsetValsRPA[0];
+                    AdjustedValsPRA[1] = 0;
+                    int currentPos = abs(CurrentValsRPA[1] - 270);
+                    if (currentPos <= 10){
+                        //System.currentTimeMillis();
+                    }
+                    else if (currentPos <= 20){
+                        AdjustedValsPRA[2] = AdjustedValsPRA[2] + 10;
+                        lastUpdate = System.currentTimeMillis();
+                    }
+                    else{
+                        AdjustedValsPRA[2] = AdjustedValsPRA[2] + 10;
+                        lastUpdate = System.currentTimeMillis();
+                    }
             }
         }
         else {
@@ -116,9 +141,21 @@ public class GyroWorker implements SensorEventListener {
         //   Toast.makeText( this, "Please look down, max pitch reached", Toast.LENGTH_SHORT).show();
         //}
 
-        LastRunValsPRA[0] = CurrentValsRPA[0]; //P between -90 and 90
+        LastRunValsPRA[0] = CurrentValsRPA[0]; // P between -90 and 90
         LastRunValsPRA[1] = CurrentValsRPA[1]; // Updates Last Run values so there is always a
         LastRunValsPRA[2] = CurrentValsRPA[2]; // variable to be read in the SocketHandler Class
+
+        // 30* upwards,90* downwards tilt. ±45*roll. ±90* yaw - gimbal restrictions
+        if ((LastRunValsPRA[0] <= 30) && (LastRunValsPRA[0] >= -90)){
+            LimitedValsPRA[0] = LastRunValsPRA[0];
+        }
+        if (abs(LastRunValsPRA[1]) <= 45){
+            LimitedValsPRA[1] = LastRunValsPRA[1];
+        }
+        if (abs(LastRunValsPRA[2]) <= 90){
+            LimitedValsPRA[2] = LastRunValsPRA[1];
+        }
+
 
     }
 

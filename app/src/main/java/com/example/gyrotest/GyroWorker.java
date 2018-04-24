@@ -17,6 +17,8 @@ public class GyroWorker implements SensorEventListener {
     private SensorManager mSensorManager;   // Creates instance of SensorManager
     private Sensor mRotationSensor;         // Creates instance of Sensor
 
+    public boolean firstReset = false;
+
     //Arrays used for storing all needed data values
     private static int[] CurrentValsRPA = new int[3];
 
@@ -32,6 +34,8 @@ public class GyroWorker implements SensorEventListener {
     private static final int FROM_RADS_TO_DEGS = -57;   // Constant to convert Radians to degrees
 
     private static long lastUpdate = 0;
+
+    private static long lastVibrate = 0;
 
     public GyroWorker(Activity mParent)
     {
@@ -69,7 +73,7 @@ public class GyroWorker implements SensorEventListener {
     }
 
     private void update(float[] vectors) { // Called every time the sensor values change,
-                                           // from the function
+        // from the function
 
         float[] rotationMatrix = new float[9];
         // Converts rotation vectors into a rotation matrix
@@ -86,57 +90,54 @@ public class GyroWorker implements SensorEventListener {
 
         // Add 180 deg to numbers to make them between 0-360 for motor
 
-        CurrentValsRPA[0] = (int) pitch + 180;
-        CurrentValsRPA[1] = (int) roll + 180;
-        CurrentValsRPA[2] = (int) azimuth + 180;
+        CurrentValsRPA[0] = (int) pitch;
+        CurrentValsRPA[1] = (int) roll - 90;
+        CurrentValsRPA[2] = (int) azimuth;
 
         // 30* upwards,90* downwards tilt. ±45*roll. ±90* yaw - gimbal restrictions
 
         // Checks to see if the camera is in fixed mode for the lidar
-        if (MainActivity.buttonState == false){
-            if(MainActivity.modeState == false){
-                for (int i = 0; i <=2; i++) { // Adjusts the values to be centered around the start point
+        if (MainActivity.buttonState == false) {  // if in "free" mode
+
+            if (MainActivity.modeState == false) {  // if in normal mode
+
+                for (int i = 0; i <= 2; i++) { // Adjusts the values to be centered around the start point
+
                     AdjustedValsPRA[i] = CurrentValsRPA[i] - OffsetValsRPA[i];
-                    if (i != 0) {
+
+                    if (i == 2) {
                         if (AdjustedValsPRA[i] > 360) {
                             AdjustedValsPRA[i] = AdjustedValsPRA[i] - 360;
                         }
-                        if (AdjustedValsPRA[i] < 0) {
-                            AdjustedValsPRA[i] = AdjustedValsPRA[i] + 360;
+                        else {
+                            AdjustedValsPRA[i] = AdjustedValsPRA[i];
                         }
                     }
                 }
+            } else if ((System.currentTimeMillis() - lastUpdate) >= (long) 500) { // if in "steering" mode
+                AdjustedValsPRA[0] = CurrentValsRPA[0] - OffsetValsRPA[0];
+                AdjustedValsPRA[1] = 0;
+                if (PosOrNev(CurrentValsRPA[1]-270)) {
+                    Steering(1);
+                }
+                else{
+                    Steering(-1);
+                }
+
             }
-            else if ((lastUpdate - System.currentTimeMillis()) >= 500) {
-                    AdjustedValsPRA[0] = CurrentValsRPA[0] - OffsetValsRPA[0];
-                    AdjustedValsPRA[1] = 0;
-                    int currentPos = abs(CurrentValsRPA[1] - 270);
-                    if (currentPos <= 10){
-                        //System.currentTimeMillis();
-                    }
-                    else if (currentPos <= 20){
-                        AdjustedValsPRA[2] = AdjustedValsPRA[2] + 10;
-                        lastUpdate = System.currentTimeMillis();
-                    }
-                    else{
-                        AdjustedValsPRA[2] = AdjustedValsPRA[2] + 10;
-                        lastUpdate = System.currentTimeMillis();
-                    }
-            }
-        }
-        else {
+        } else {
             for (int i = 0; i <= 2; i++) {
                 AdjustedValsPRA[i] = 0;
             }
         }
 
         // Updates the UI
-        ((TextView)mParent.findViewById(R.id.XDisplay)).setText("P: "+ CurrentValsRPA[0]);
-        ((TextView)mParent.findViewById(R.id.YDisplay)).setText("R: "+ CurrentValsRPA[1]);
-        ((TextView)mParent.findViewById(R.id.ZDisplay)).setText("A: "+ CurrentValsRPA[2]);
-        ((TextView)mParent.findViewById(R.id.XAdjusted)).setText("AP: "+(AdjustedValsPRA[0]));
-        ((TextView)mParent.findViewById(R.id.YAdjusted)).setText("AR: "+(AdjustedValsPRA[1]));
-        ((TextView)mParent.findViewById(R.id.ZAdjusted)).setText("AA: "+(AdjustedValsPRA[2]));
+        ((TextView) mParent.findViewById(R.id.XDisplay)).setText("P: " + CurrentValsRPA[0]);
+        ((TextView) mParent.findViewById(R.id.YDisplay)).setText("R: " + CurrentValsRPA[1]);
+        ((TextView) mParent.findViewById(R.id.ZDisplay)).setText("A: " + CurrentValsRPA[2]);
+        ((TextView) mParent.findViewById(R.id.XAdjusted)).setText("AP: " + (AdjustedValsPRA[0]));
+        ((TextView) mParent.findViewById(R.id.YAdjusted)).setText("AR: " + (AdjustedValsPRA[1]));
+        ((TextView) mParent.findViewById(R.id.ZAdjusted)).setText("AA: " + (AdjustedValsPRA[2]));
         //if (((IPitch+StartIPitch) > 0) && (LastIPitRead <= 0)){
         //   Toast.makeText( this, "Please look down, max pitch reached", Toast.LENGTH_SHORT).show();
         //}
@@ -145,24 +146,79 @@ public class GyroWorker implements SensorEventListener {
         LastRunValsPRA[1] = CurrentValsRPA[1]; // Updates Last Run values so there is always a
         LastRunValsPRA[2] = CurrentValsRPA[2]; // variable to be read in the SocketHandler Class
 
-        // 30* upwards,90* downwards tilt. ±45*roll. ±90* yaw - gimbal restrictions
-        if ((LastRunValsPRA[0] <= 30) && (LastRunValsPRA[0] >= -90)){
-            LimitedValsPRA[0] = LastRunValsPRA[0];
-        }
-        if (abs(LastRunValsPRA[1]) <= 45){
-            LimitedValsPRA[1] = LastRunValsPRA[1];
-        }
-        if (abs(LastRunValsPRA[2]) <= 90){
-            LimitedValsPRA[2] = LastRunValsPRA[1];
-        }
-
+        LimitedVals();
 
     }
 
+    public void LimitedVals(){
+        // 30* upwards,90* downwards tilt. ±45*roll. ±90* yaw - gimbal restrictions
+
+        // Pitch
+        if ((AdjustedValsPRA[0] <= 30) && (AdjustedValsPRA[0] >= -90)){
+            LimitedValsPRA[0] = AdjustedValsPRA[0];
+        }
+        else if ((System.currentTimeMillis() - lastVibrate) >= 500 ) {
+            vibrate();
+            lastVibrate = System.currentTimeMillis();
+        }
+
+        // Roll
+        if (abs(AdjustedValsPRA[1]) <= 45){
+            LimitedValsPRA[1] = AdjustedValsPRA[1];
+        }
+        else if ((System.currentTimeMillis() - lastVibrate) >= 500 ) {
+            vibrate();
+            lastVibrate = System.currentTimeMillis();
+        }
+
+        // Yaw
+        if (abs(AdjustedValsPRA[2]) <= 90){
+            LimitedValsPRA[2] = AdjustedValsPRA[2];
+        }
+        else if ((System.currentTimeMillis() - lastVibrate) >= 500 ) {
+            vibrate();
+            lastVibrate = System.currentTimeMillis();
+        }
+
+        ((TextView)mParent.findViewById(R.id.ResX)).setText("RA: "+LimitedValsPRA[0]);
+        ((TextView)mParent.findViewById(R.id.ResY)).setText("RA: "+LimitedValsPRA[1]);
+        ((TextView)mParent.findViewById(R.id.ResZ)).setText("RA: "+LimitedValsPRA[2]);
+
+    }
+
+    public void vibrate(){
+        if (firstReset){
+            // TODO VIBRATE CODE
+        }
+    }
+
     public void ResetPos(){ // Re-centres the start point so that it is looking forwards
+        firstReset = true; // so that it doesnt vibrate on load up
         OffsetValsRPA[0] = LastRunValsPRA[0];
         OffsetValsRPA[1] = LastRunValsPRA[1];
         OffsetValsRPA[2] = LastRunValsPRA[2];
     }
+
+    public boolean PosOrNev(int Number){
+        if (Number >= 0){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public void Steering(int State){
+
+        int currentPos = abs(CurrentValsRPA[1] - 270);
+        if (currentPos <= 10) { // if in the "dead zone" do nothing
+            //System.currentTimeMillis();
+        } else if (currentPos <= 20) { // move an increment if head it tilted enough
+            AdjustedValsPRA[2] = AdjustedValsPRA[2] + (State*5);
+            lastUpdate = System.currentTimeMillis();
+        } else
+            AdjustedValsPRA[2] = AdjustedValsPRA[2] + (State *10);
+            lastUpdate = System.currentTimeMillis();
+        }
 
 }

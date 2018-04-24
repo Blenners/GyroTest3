@@ -19,6 +19,31 @@
 
         <TableRow
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="221dp" >
+
+            <TextView
+                android:id="@+id/ResX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="XR" />
+
+            <TextView
+                android:id="@+id/ResY"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="YR" />
+
+            <TextView
+                android:id="@+id/ResZ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ZR" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TextView

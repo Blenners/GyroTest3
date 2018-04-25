@@ -168,7 +168,7 @@
                 android:text="IP Address" />
 
             <EditText
-                android:id="@+id/editText2"
+                android:id="@+id/IP_Box"
                 android:layout_width="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"
@@ -186,7 +186,7 @@
                 android:text="Port Number " />
 
             <EditText
-                android:id="@+id/editText4"
+                android:id="@+id/PN_Box"
                 android:layout_width="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"

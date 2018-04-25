@@ -1,11 +1,17 @@
 package com.example.gyrotest;
 
+import android.app.Activity;
+import android.widget.EditText;
+
 import java.io.*;
 import java.net.*;
 
 import static java.lang.Thread.sleep;
 
 public class SocketHandler {
+
+    public static String hostName = "192.168.0.58"; // IP address of the Raspberry Pi 58 20 for laptop
+    public static int portNumber = 8888; // Port that the server is hosting
 
     private static int[] orientationVals = new int[3]; // Initialise variables to be sent to drone
     public static Thread thread = new Thread(new Runnable() { // Creates this as a thread
@@ -15,8 +21,8 @@ public class SocketHandler {
             try {
 
                     //TODO read in inputs from text box but keep as default
-                    String hostName = "192.168.0.58"; // IP address of the Raspberry Pi 58 20 for laptop
-                    int portNumber = 8888; // Port that the server is hosting
+                    //String hostName = "192.168.0.58"; // IP address of the Raspberry Pi 58 20 for laptop
+                    //int portNumber = 8888; // Port that the server is hosting
 
                     try (
                             Socket droneSocket = new Socket(hostName, portNumber); // Creates the socket

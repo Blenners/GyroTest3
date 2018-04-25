@@ -37,6 +37,8 @@ public class GyroWorker implements SensorEventListener {
 
     private static long lastVibrate = 0;
 
+    //Vibrator v = (Vibrator) mParent.getSystemService(Context.VIBRATOR_SERVICE);
+
     public GyroWorker(Activity mParent)
     {
         this.mParent = mParent;
@@ -138,6 +140,7 @@ public class GyroWorker implements SensorEventListener {
         ((TextView) mParent.findViewById(R.id.XAdjusted)).setText("AP: " + (AdjustedValsPRA[0]));
         ((TextView) mParent.findViewById(R.id.YAdjusted)).setText("AR: " + (AdjustedValsPRA[1]));
         ((TextView) mParent.findViewById(R.id.ZAdjusted)).setText("AA: " + (AdjustedValsPRA[2]));
+
         //if (((IPitch+StartIPitch) > 0) && (LastIPitRead <= 0)){
         //   Toast.makeText( this, "Please look down, max pitch reached", Toast.LENGTH_SHORT).show();
         //}
@@ -158,7 +161,7 @@ public class GyroWorker implements SensorEventListener {
             LimitedValsPRA[0] = AdjustedValsPRA[0];
         }
         else if ((System.currentTimeMillis() - lastVibrate) >= 500 ) {
-            vibrate();
+            //vibrate();
             lastVibrate = System.currentTimeMillis();
         }
 
@@ -167,7 +170,7 @@ public class GyroWorker implements SensorEventListener {
             LimitedValsPRA[1] = AdjustedValsPRA[1];
         }
         else if ((System.currentTimeMillis() - lastVibrate) >= 500 ) {
-            vibrate();
+            //vibrate();
             lastVibrate = System.currentTimeMillis();
         }
 
@@ -176,7 +179,7 @@ public class GyroWorker implements SensorEventListener {
             LimitedValsPRA[2] = AdjustedValsPRA[2];
         }
         else if ((System.currentTimeMillis() - lastVibrate) >= 500 ) {
-            vibrate();
+            //vibrate();
             lastVibrate = System.currentTimeMillis();
         }
 
@@ -186,11 +189,17 @@ public class GyroWorker implements SensorEventListener {
 
     }
 
-    public void vibrate(){
+/*    public void vibrate(){
         if (firstReset){
-            // TODO VIBRATE CODE
+            // Vibrate for 500 milliseconds
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                v.vibrate(VibrationEffect.createOneShot(500,VibrationEffect.DEFAULT_AMPLITUDE));
+            }else{
+                //deprecated in API 26
+                v.vibrate(500);
+            }
         }
-    }
+    }*/
 
     public void ResetPos(){ // Re-centres the start point so that it is looking forwards
         firstReset = true; // so that it doesnt vibrate on load up

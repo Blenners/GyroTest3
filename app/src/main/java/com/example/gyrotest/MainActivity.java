@@ -1,8 +1,13 @@
 package com.example.gyrotest;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.View;
 import android.app.Activity;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
@@ -14,6 +19,8 @@ public class MainActivity extends Activity {
     SocketHandler SH;
     public static boolean buttonState; // Public variable for use in GyroWorker
     public static boolean modeState; // Public variable for use in GyroWorker
+
+    //Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
 
     @Override
@@ -51,8 +58,22 @@ public class MainActivity extends Activity {
             }
         });
 
+        ((TextView) findViewById(R.id.IP_Box)).setText("192.168.0.58");
+        ((TextView) findViewById(R.id.PN_Box)).setText("8888");
+
     }
 
+/*    public void vibrate(){
+        if (worker.firstReset){
+            // Vibrate for 500 milliseconds
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                v.vibrate(VibrationEffect.createOneShot(500,VibrationEffect.DEFAULT_AMPLITUDE));
+            }else{
+                //deprecated in API 26
+                v.vibrate(500);
+            }
+        }
+    }*/
 
     public void Connect(View v) { // Called when the connect button is called
         try {                     // (Option in button setting)
@@ -65,6 +86,7 @@ public class MainActivity extends Activity {
     }
 
     public void resetButton(View view){
+        //vibrate();
         worker.ResetPos();
     } // Called on "Rest Pos" button press
 

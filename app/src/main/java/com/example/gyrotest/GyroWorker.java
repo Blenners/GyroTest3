@@ -28,7 +28,7 @@ public class GyroWorker implements SensorEventListener {
 
     public static int[] LastRunValsPRA = new int[3];
 
-    public static int[] LimitedValsPRA = new int[3];
+    public static int[] LimitedValsPRA = new int[4];
 
     private static final int SENSOR_DELAY = 500 * 1000; // 500ms - sampling rate or sensors
     private static final int FROM_RADS_TO_DEGS = -57;   // Constant to convert Radians to degrees
@@ -99,7 +99,7 @@ public class GyroWorker implements SensorEventListener {
         // 30* upwards,90* downwards tilt. ±45*roll. ±90* yaw - gimbal restrictions
 
         // Checks to see if the camera is in fixed mode for the lidar
-        if (MainActivity.buttonState == false) {  // if in "free" mode
+        if (MainActivity.lidarState == false) {  // if in "free" mode
 
             if (MainActivity.modeState == false) {  // if in normal mode
 
@@ -181,6 +181,14 @@ public class GyroWorker implements SensorEventListener {
         else if ((System.currentTimeMillis() - lastVibrate) >= 500 ) {
             //vibrate();
             lastVibrate = System.currentTimeMillis();
+        }
+
+        // Lidar Activation
+        if (MainActivity.lidarState == true){
+         LimitedValsPRA[3] = 1;
+        }
+        else{
+            LimitedValsPRA[3] = 0;
         }
 
         ((TextView)mParent.findViewById(R.id.ResX)).setText("RA: "+LimitedValsPRA[0]);

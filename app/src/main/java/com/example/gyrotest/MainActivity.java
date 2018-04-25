@@ -17,7 +17,7 @@ public class MainActivity extends Activity {
 
     GyroWorker worker; // Listing out attributes
     SocketHandler SH;
-    public static boolean buttonState; // Public variable for use in GyroWorker
+    public static boolean lidarState; // Public variable for use in GyroWorker
     public static boolean modeState; // Public variable for use in GyroWorker
 
     //Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -37,9 +37,9 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
 
                 if (t.isChecked()) { // Sets the public variable state depending on the state
-                    buttonState = true; // of the button
+                    lidarState = true; // of the button
                 } else {
-                    buttonState = false;
+                    lidarState = false;
                 }
             }
         });

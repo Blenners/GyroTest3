@@ -99,7 +99,7 @@ public class GyroWorker implements SensorEventListener {
         // 30* upwards,90* downwards tilt. ±45*roll. ±90* yaw - gimbal restrictions
 
         // Checks to see if the camera is in fixed mode for the lidar
-        if (MainActivity.lidarState == false) {  // if in "free" mode
+        if (MainActivity.lidarState == 0) {  // if in "free" mode
 
             if (MainActivity.modeState == false) {  // if in normal mode
 
@@ -184,7 +184,7 @@ public class GyroWorker implements SensorEventListener {
         }
 
         // Lidar Activation
-        if (MainActivity.lidarState == true){
+        if (MainActivity.lidarState == 1){
          LimitedValsPRA[3] = 1;
         }
         else{

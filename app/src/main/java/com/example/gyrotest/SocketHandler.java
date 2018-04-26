@@ -39,7 +39,7 @@ public class SocketHandler {
 
 
             while ((orientationVals = GyroWorker.LimitedValsPRA) != null) { // When there are values available
-                out.println(orientationVals[0] + "," + orientationVals[1] + "," + orientationVals[2]); // Send them to the server
+                out.println(orientationVals[0] + "," + orientationVals[1] + "," + orientationVals[2] + "," + MainActivity.lidarState); // Send them to the server
                 sleep(2000); // Do this every xxx milliseconds
             }
                     } catch (UnknownHostException e) { // Error handling

@@ -1,12 +1,15 @@
 package com.example.gyrotest;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.view.MotionEvent;
 import android.view.View;
 import android.app.Activity;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -17,7 +20,7 @@ public class MainActivity extends Activity {
 
     GyroWorker worker; // Listing out attributes
     SocketHandler SH;
-    public static boolean lidarState; // Public variable for use in GyroWorker
+    public static int lidarState; // Public variable for use in GyroWorker
     public static boolean modeState; // Public variable for use in GyroWorker
 
     //Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -37,9 +40,9 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
 
                 if (t.isChecked()) { // Sets the public variable state depending on the state
-                    lidarState = true; // of the button
+                    lidarState = 1; // of the button
                 } else {
-                    lidarState = false;
+                    lidarState = 0;
                 }
             }
         });
@@ -58,6 +61,23 @@ public class MainActivity extends Activity {
             }
         });
 
+        final Button b = findViewById(R.id.ConnectButton);
+        b.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                b.setBackgroundColor(Color.GREEN);
+                try {                     // (Option in button setting)
+
+                    worker.ResetPos();
+                    SH.connect();         // Calls connect function in SH (SocketHandler) class
+                } catch (IOException e) {
+                    e.printStackTrace();  // Error handling
+                }
+                return false;
+            }
+        });
+
+
         ((TextView) findViewById(R.id.IP_Box)).setText("192.168.0.58");
         ((TextView) findViewById(R.id.PN_Box)).setText("8888");
 
@@ -75,15 +95,6 @@ public class MainActivity extends Activity {
         }
     }*/
 
-    public void Connect(View v) { // Called when the connect button is called
-        try {                     // (Option in button setting)
-            worker.ResetPos();
-            SH.connect();         // Calls connect function in SH (SocketHandler) class
-        } catch (IOException e) {
-            e.printStackTrace();  // Error handling
-        }
-
-    }
 
     public void resetButton(View view){
         //vibrate();

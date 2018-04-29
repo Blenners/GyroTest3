@@ -94,7 +94,7 @@ public class GyroWorker implements SensorEventListener {
 
         CurrentValsRPA[0] = (int) pitch;
         CurrentValsRPA[1] = (int) roll - 90;
-        CurrentValsRPA[2] = (int) azimuth;
+        CurrentValsRPA[2] = (int) azimuth ;
 
         // 30* upwards,90* downwards tilt. ±45*roll. ±90* yaw - gimbal restrictions
 
@@ -108,7 +108,7 @@ public class GyroWorker implements SensorEventListener {
                     AdjustedValsPRA[i] = CurrentValsRPA[i] - OffsetValsRPA[i];
 
                     if (i == 2) {
-                        if (AdjustedValsPRA[i] > 360) {
+                        if (AdjustedValsPRA[i] > 180) {
                             AdjustedValsPRA[i] = AdjustedValsPRA[i] - 360;
                         }
                         else {
@@ -225,17 +225,20 @@ public class GyroWorker implements SensorEventListener {
         }
     }
 
-    public void Steering(int State){
+    public void Steering(int State) {
 
         int currentPos = abs(CurrentValsRPA[1]);
-        if (currentPos <= 10) { // if in the "dead zone" do nothing
-            //System.currentTimeMillis();
-        } else if (currentPos <= 20) { // move an increment if head it tilted enough
-            AdjustedValsPRA[2] = AdjustedValsPRA[2] + (State*5);
-            lastUpdate = System.currentTimeMillis();
-        } else
-            AdjustedValsPRA[2] = AdjustedValsPRA[2] + (State *10);
-            lastUpdate = System.currentTimeMillis();
+        if (abs(AdjustedValsPRA[2]) <= 90) { // so it doesnt drift off and take ages to return
+            if (currentPos <= 10) { // if in the "dead zone" do nothing
+                //System.currentTimeMillis();
+            } else if (currentPos <= 20) { // move an increment if head it tilted enough
+                AdjustedValsPRA[2] = AdjustedValsPRA[2] + (State * 5);
+                lastUpdate = System.currentTimeMillis();
+            } else {
+                AdjustedValsPRA[2] = AdjustedValsPRA[2] + (State * 10);
+                lastUpdate = System.currentTimeMillis();
+            }
         }
+    }
 
 }

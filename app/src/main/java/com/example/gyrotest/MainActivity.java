@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.app.Activity;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -79,12 +80,30 @@ public class MainActivity extends Activity {
             }
         }
     }*/
+    public  EditText waitBox = (EditText)findViewById(R.id.waitTime);
+    String editTextStr = waitBox.getText().toString();
+    public  Thread conthread = new Thread(new Runnable() { // Creates this as a thread
+
+        @Override
+        public void run() {
+            int waitTime = Integer.parseInt(editTextStr);
+            try {
+                conthread.sleep((waitTime)*1000);
+                worker.ResetPos();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    });
 
     //final Button b = findViewById(R.id.ConnectButton);
     public void Connect(View v){ // Called when the connect button is called
         try {                     // (Option in button setting)
             //b.setBackgroundColor(Color.GREEN);
-            worker.ResetPos();
+            //worker.ResetPos();
+            conthread.start();
             SH.connect();         // Calls connect function in SH (SocketHandler) class
         } catch (IOException e) {
             e.printStackTrace();  // Error handling

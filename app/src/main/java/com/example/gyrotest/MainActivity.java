@@ -61,21 +61,6 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button b = findViewById(R.id.ConnectButton);
-        b.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                b.setBackgroundColor(Color.GREEN);
-                try {                     // (Option in button setting)
-
-                    worker.ResetPos();
-                    SH.connect();         // Calls connect function in SH (SocketHandler) class
-                } catch (IOException e) {
-                    e.printStackTrace();  // Error handling
-                }
-                return false;
-            }
-        });
 
 
         ((TextView) findViewById(R.id.IP_Box)).setText("192.168.0.58");
@@ -95,6 +80,17 @@ public class MainActivity extends Activity {
         }
     }*/
 
+    //final Button b = findViewById(R.id.ConnectButton);
+    public void Connect(View v){ // Called when the connect button is called
+        try {                     // (Option in button setting)
+            //b.setBackgroundColor(Color.GREEN);
+            worker.ResetPos();
+            SH.connect();         // Calls connect function in SH (SocketHandler) class
+        } catch (IOException e) {
+            e.printStackTrace();  // Error handling
+        }
+
+    }
 
     public void resetButton(View view){
         //vibrate();

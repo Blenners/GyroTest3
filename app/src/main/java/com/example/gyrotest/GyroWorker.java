@@ -119,7 +119,7 @@ public class GyroWorker implements SensorEventListener {
             } else if ((System.currentTimeMillis() - lastUpdate) >= (long) 500) { // if in "steering" mode
                 AdjustedValsPRA[0] = CurrentValsRPA[0] - OffsetValsRPA[0];
                 AdjustedValsPRA[1] = 0;
-                if (PosOrNev(CurrentValsRPA[1]-270)) {
+                if (PosOrNev(CurrentValsRPA[1])) {
                     Steering(1);
                 }
                 else{
@@ -227,7 +227,7 @@ public class GyroWorker implements SensorEventListener {
 
     public void Steering(int State){
 
-        int currentPos = abs(CurrentValsRPA[1] - 270);
+        int currentPos = abs(CurrentValsRPA[1]);
         if (currentPos <= 10) { // if in the "dead zone" do nothing
             //System.currentTimeMillis();
         } else if (currentPos <= 20) { // move an increment if head it tilted enough

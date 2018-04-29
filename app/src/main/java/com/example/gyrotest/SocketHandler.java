@@ -10,7 +10,7 @@ import static java.lang.Thread.sleep;
 
 public class SocketHandler {
 
-    public static String hostName = "192.168.0.58"; // IP address of the Raspberry Pi 58 20 for laptop
+    public static String hostName = "192.168.0.68"; // IP address of the Raspberry Pi 58, 20 for laptop, 68 for 0 //"172.20.10.4";
     public static int portNumber = 8888; // Port that the server is hosting
 
     private static int[] orientationVals = new int[3]; // Initialise variables to be sent to drone

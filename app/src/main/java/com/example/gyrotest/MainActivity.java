@@ -1,11 +1,15 @@
 package com.example.gyrotest;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.app.Activity;
@@ -23,16 +27,34 @@ public class MainActivity extends Activity {
     SocketHandler SH;
     public static int lidarState; // Public variable for use in GyroWorker
     public static boolean modeState; // Public variable for use in GyroWorker
-    public static boolean commReset = false;
+    public static boolean rollLock = false;
 
-    //Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+    Vibrator v ;
+    SharedPreferences preferences;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { // Called when the app is loaded up
         super.onCreate(savedInstanceState);
         worker = new GyroWorker(this); // Creates instances of each class
-        SH = new SocketHandler();
+
+
+         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SH = new SocketHandler(preferences);
+        attachEventListener();
+
+        String ipaddress  = preferences.getString("IPADDRESS", "172.20.10.5");
+        EditText ipAddressEdit = (EditText)findViewById(R.id.IP_Box);
+        ipAddressEdit.setText(ipaddress);
+
+        Integer portNo  = preferences.getInt("PORTNUMBER", 8888);
+        EditText portNoEdit = (EditText)findViewById(R.id.PN_Box);
+        portNoEdit.setText(Integer.toString(portNo));
+
+
+
 
 
         // Fix or free mode button
@@ -55,23 +77,36 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
 
                 if (t2.isChecked()) {
-                    worker.ResetPos();
                     modeState = true;
+                    worker.ResetPos();
+                    worker.AdjustedValsPRA[2] = 0;
                 } else {
                     modeState = false;
                 }
             }
         });
 
+        final ToggleButton t3 = findViewById(R.id.rollLockBut); // Sets up a listener that is called
+        t3.setOnClickListener(new View.OnClickListener() {//  every time the button is pressed
+
+            public void onClick(View v) {
+
+                if (t3.isChecked()) {
+                    rollLock = true;
+                    worker.ResetPos();
+                    worker.AdjustedValsPRA[2] = 0;
+                } else {
+                    rollLock = false;
+                }
+            }
+        });
 
 
-        ((TextView) findViewById(R.id.IP_Box)).setText("192.168.0.58");
-        ((TextView) findViewById(R.id.PN_Box)).setText("8888");
+
 
     }
 
-/*    public void vibrate(){
-        if (worker.firstReset){
+    public void vibrate(){
             // Vibrate for 500 milliseconds
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 v.vibrate(VibrationEffect.createOneShot(500,VibrationEffect.DEFAULT_AMPLITUDE));
@@ -79,8 +114,64 @@ public class MainActivity extends Activity {
                 //deprecated in API 26
                 v.vibrate(500);
             }
-        }
-    }*/
+    }
+
+    public void attachEventListener()
+    {
+
+        // IP Address input field
+        final EditText ipAddressEdit = (EditText)findViewById(R.id.IP_Box);
+        ipAddressEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                String ipaddressnew =  ipAddressEdit.getText().toString();
+
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("IPADDRESS",ipaddressnew);
+                editor.apply();
+            }
+        });
+
+        // port number
+
+
+        final EditText portNumberEdit = (EditText)findViewById(R.id.PN_Box);
+        portNumberEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                Integer portNumber =  Integer.parseInt(portNumberEdit.getText().toString());
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putInt("PORTNUMBER",  portNumber);
+                editor.apply();
+            }
+        });
+
+
+
+
+    }
 /*    public  EditText waitBox = (EditText)findViewById(R.id.waitTime);
     String editTextStr = waitBox.getText().toString();
     public  Thread conthread = new Thread(new Runnable() { // Creates this as a thread
@@ -119,8 +210,9 @@ public class MainActivity extends Activity {
     }
 
     public void resetButton(View view){
-        //vibrate();
+        vibrate();
         worker.ResetPos();
+
     } // Called on "Rest Pos" button press
 
 }

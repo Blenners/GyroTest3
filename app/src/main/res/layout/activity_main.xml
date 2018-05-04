@@ -228,10 +228,24 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="ToggleButton"
-        android:textOff="Normal"
-        android:textOn="Steering"
+        android:textOff="Steering Mode"
+        android:textOn="Normal Mode"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tableLayout2"
         app:layout_constraintStart_toEndOf="@+id/tableLayout" />
+
+    <ToggleButton
+        android:id="@+id/rollLockBut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="ToggleButton"
+        android:textOff="Lock Roll"
+        android:textOn="Unlock Roll"
+        app:layout_constraintBottom_toTopOf="@+id/ModeBut"
+        app:layout_constraintEnd_toEndOf="@+id/ModeBut"
+        app:layout_constraintStart_toStartOf="@+id/ModeBut" />
 
 </android.support.constraint.ConstraintLayout>
